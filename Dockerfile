@@ -1,4 +1,6 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
+
+
 
 COPY scripts/copy_so.sh copy_so.sh
 COPY _so _so

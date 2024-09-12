@@ -15,7 +15,7 @@ cmake-debug cmake-release: cmake-%:
 # build project via cmake
 .PHONY: build-%
 build-debug build-release: build-%:
-	@if [ ! -f build_$* ]; then \
+	@if [ ! -d build_$* ]; then \
         echo "build_$* does not exist. Running cmake configure..."; \
         $(MAKE) cmake-$*; \
     fi
@@ -23,13 +23,13 @@ build-debug build-release: build-%:
 
 # run all tests via ctest
 .PHONY: test-%
-test-debug test-release: test-%: build-%
+test-debug test-release: test-%:
 	cd build_$* && ((test -t 1 && GTEST_COLOR=1 PYTEST_ADDOPTS="--color=yes" ctest -V) || ctest -V)
 	pycodestyle tests
 
 # run testsuite tests. F=filter for filter some tests
 .PHONY: testsuite-%
-testsuite-debug testsuite-release: testsuite-%: build-%
+testsuite-debug testsuite-release: testsuite-%:
 	@rm -rf tests/results
 	./build_$*/runtests-testsuite-service_template --service-logs-pretty -vv tests $(if $(F),-k $(F))
 
@@ -205,7 +205,7 @@ docker-install:
 # start docker container
 .PHONY: docker-start
 docker-start:
-	@if [ ! -f container ]; then \
+	@if [ ! -d container ]; then \
         echo "Directory container does not exist. Running docker-install..."; \
         $(MAKE) docker-install; \
     fi
